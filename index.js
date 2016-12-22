@@ -2,7 +2,7 @@ const { existsSync, readFileSync } = require('fs');
 const { exec } = require('child_process');
 const { resolve } = require('path');
 
-const Remarkable = require('remarkable');
+const { markdown } = require('./markdown');
 
 const resolveCWD = (pid, cb) => 
  exec(`lsof -p ${pid} | grep cwd | tr -s ' ' | cut -d ' ' -f9-`, (err, cwd) => {
@@ -22,7 +22,8 @@ exports.middleware = (store) => (next) => (action) => {
   if ('SESSION_ADD_DATA' === action.type) {
     const { data } = action;
     const match = data.match(notFound);
-    const { sessions } = store.getState();
+    const state = store.getState();
+    const { sessions } = state;
     const { activeUid } = sessions;
     const session = sessions.sessions[activeUid];
     const { pid } = session;
@@ -38,7 +39,7 @@ exports.middleware = (store) => (next) => (action) => {
                 type: 'SESSION_URL_SET',
                 uid: activeUid,
                 url: URL.createObjectURL(new Blob([
-                  new Remarkable({html: true}).render(source)
+                  markdown.render(source)
                 ],{type: 'text/html'}))
               });
             } else {
