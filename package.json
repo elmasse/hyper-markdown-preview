@@ -1,15 +1,32 @@
 {
   "name": "hyper-markdown-preview",
   "version": "1.0.0",
-  "description": "",
+  "description": "Hyper plugin to preview markdown files right in your terminal.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "hyper",
+    "hyperterm",
+    "markdown",
+    "md",
+    "preview"
+  ],
+  "author": {
+    "name": "Maximiliano Fierro",
+    "email": "elmasse@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/elmasse/hyper-markdown-preview.git"
+  },
+  "bugs": {
+    "url": "https://github.com/elmasse/hyper-markdown-preview/issues"
+  },
   "license": "ISC",
   "dependencies": {
+    "highlight.js": "^9.9.0",
     "remarkable": "^1.7.1"
   }
 }
