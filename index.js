@@ -4,8 +4,8 @@ const { resolve } = require('path');
 
 const { markdown } = require('./markdown');
 
-const resolveCWD = (pid, cb) => 
- exec(`lsof -p ${pid} | grep cwd | tr -s ' ' | cut -d ' ' -f9-`, (err, cwd) => {
+const resolveCWD = (pid, cb) => {
+  exec(`lsof -n -p ${pid} | grep cwd | tr -s ' ' | cut -d ' ' -f9-`, (err, cwd) => {
     if (err) {
       cb(err, null);
     } else {
@@ -13,6 +13,7 @@ const resolveCWD = (pid, cb) =>
       cb(null, cwd);
     }
   });
+}
 
 
 exports.middleware = (store) => (next) => (action) => {
@@ -28,20 +29,27 @@ exports.middleware = (store) => (next) => (action) => {
     const session = sessions.sessions[activeUid];
     const { pid } = session;
 
-    if (match) {
+    const start = performance.now();
+
+    if (match) { 
       const file = match[2];
       if (/\.(md|markdown)$/.test(file)) {
           resolveCWD(pid, (err, cwd) => {
             const path = resolve(cwd, file);
             if (existsSync(path)) {
+              
               const source = readFileSync(path, 'UTF-8');
+
+              const url = URL.createObjectURL(new Blob([
+                  markdown.render(source)
+                ],{type: 'text/html'}))
+              
               store.dispatch({
                 type: 'SESSION_URL_SET',
                 uid: activeUid,
-                url: URL.createObjectURL(new Blob([
-                  markdown.render(source)
-                ],{type: 'text/html'}))
+                url
               });
+
             } else {
               next(action);
             }
