@@ -15,11 +15,10 @@ const resolveCWD = (pid, cb) => {
   });
 }
 
+const notFound = /(?:ba)?sh: ((?:https?:\/\/)|(?:file:\/\/)|(?:\/\/))?(.*): (?:(?:command not found)|(?:No such file or directory))/;
 
 exports.middleware = (store) => (next) => (action) => {
 
-  const notFound = /(?:ba)?sh: ((?:https?:\/\/)|(?:file:\/\/)|(?:\/\/))?(.*): (?:(?:command not found)|(?:No such file or directory))/;
- 
   if ('SESSION_ADD_DATA' === action.type) {
     const { data } = action;
     const match = data.match(notFound);
@@ -63,13 +62,4 @@ exports.middleware = (store) => (next) => (action) => {
   } else {
     next(action);
   }
-};
-
-exports.reduceUI = (state, action) => {
-  switch (action.type) {
-    case 'RENDER_MARKDOWN':
-      const uid = state.activeUid;
-      return state.setIn(['sessions', uid, 'url'], action.url);
-  }
-  return state;
 };
