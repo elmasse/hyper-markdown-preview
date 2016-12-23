@@ -3,6 +3,7 @@ const { exec } = require('child_process');
 const { resolve } = require('path');
 
 const { markdown } = require('./markdown');
+const matcher = require('./shell-matcher');
 
 const resolveCWD = (pid, cb) => {
   exec(`lsof -n -p ${pid} | grep cwd | tr -s ' ' | cut -d ' ' -f9-`, (err, cwd) => {
@@ -15,20 +16,18 @@ const resolveCWD = (pid, cb) => {
   });
 }
 
-const notFound = /(?:ba)?sh: ((?:https?:\/\/)|(?:file:\/\/)|(?:\/\/))?(.*): (?:(?:command not found)|(?:No such file or directory))/;
+
 
 exports.middleware = (store) => (next) => (action) => {
 
   if ('SESSION_ADD_DATA' === action.type) {
     const { data } = action;
-    const match = data.match(notFound);
     const state = store.getState();
     const { sessions } = state;
     const { activeUid } = sessions;
     const session = sessions.sessions[activeUid];
-    const { pid } = session;
-
-    const start = performance.now();
+    const { pid, shell } = session;
+    const match = data.match(matcher[shell]);
 
     if (match) { 
       const file = match[2];
