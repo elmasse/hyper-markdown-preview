@@ -2,6 +2,13 @@
 
 A plugin to preview markdown files in your Hyper term.
 
+
+## Usage
+
+Just type the location of your markdown file in your terminal.
+
+![screencapture](./screencapture.gif)
+
 ## Install
 
 Add the hyper-markdown-preview to your `.hyper.js` config file.
@@ -12,6 +19,3 @@ Add the hyper-markdown-preview to your `.hyper.js` config file.
 
 ```
 
-## Usage
-
-Just type the location of your markdown file in your terminal.
