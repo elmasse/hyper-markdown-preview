@@ -37,10 +37,9 @@ exports.middleware = (store) => (next) => (action) => {
             if (existsSync(path)) {
               
               const source = readFileSync(path, 'UTF-8');
+              const html =  `<html><meta charset="utf-8"><body>${markdown.render(source)}</body></html>`;
 
-              const url = URL.createObjectURL(new Blob([
-                  markdown.render(source)
-                ],{type: 'text/html'}))
+              const url = URL.createObjectURL(new Blob([html],{type: 'text/html'}))
               
               store.dispatch({
                 type: 'SESSION_URL_SET',
