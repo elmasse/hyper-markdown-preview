@@ -16,8 +16,6 @@ const resolveCWD = (pid, cb) => {
   });
 }
 
-
-
 exports.middleware = (store) => (next) => (action) => {
 
   if ('SESSION_ADD_DATA' === action.type) {
@@ -33,13 +31,21 @@ exports.middleware = (store) => (next) => (action) => {
       const file = match[2];
       if (/\.(md|markdown)$/.test(file)) {
           resolveCWD(pid, (err, cwd) => {
-            const path = resolve(cwd, file);
-            if (existsSync(path)) {
-              
-              const source = readFileSync(path, 'UTF-8');
-              const html =  `<html><meta charset="utf-8"><body>${markdown.render(source)}</body></html>`;
+            if (err) {
+              console.log('Cannot retrieve CWD', err);
+              return;
+            }
 
-              const url = URL.createObjectURL(new Blob([html],{type: 'text/html'}))
+            const path = resolve(cwd, file);
+
+            if (existsSync(path)) {
+              const source = readFileSync(path, 'UTF-8');
+              const html =  `<html>
+                <meta charset="utf-8">
+                <body class="markdown-body">${markdown.render(source)}</body>
+                </html>`;
+
+              const url = URL.createObjectURL(new Blob([html],{type: 'text/html'}));
               
               store.dispatch({
                 type: 'SESSION_URL_SET',
