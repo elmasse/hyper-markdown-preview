@@ -1,5 +1,9 @@
 # hyper-markdown-preview
 
+[![npm](https://img.shields.io/npm/v/hyper-markdown-preview.svg?maxAge=86400?style=flat-square)](https://www.npmjs.com/package/hyper-markdown-preview)
+[![npm](https://img.shields.io/npm/dt/hyper-markdown-preview.svg?maxAge=86400?style=flat-square)](https://www.npmjs.com/package/hyper-markdown-preview)
+
+
 A plugin to preview markdown files in your Hyper term.
 
 
