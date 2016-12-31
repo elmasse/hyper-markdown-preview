@@ -2,7 +2,7 @@ const { existsSync, readFileSync } = require('fs');
 const { exec } = require('child_process');
 const { resolve } = require('path');
 
-const { markdown } = require('./markdown');
+const { markdown, replaceLocalImagePlugin } = require('./markdown');
 const matcher = require('./shell-matcher');
 
 const resolveCWD = (pid, cb) => {
@@ -39,6 +39,9 @@ exports.middleware = (store) => (next) => (action) => {
             const path = resolve(cwd, file);
 
             if (existsSync(path)) {
+              
+              markdown.use(replaceLocalImagePlugin, {cwd});
+              
               const source = readFileSync(path, 'UTF-8');
               const html =  `<html>
                 <meta charset="utf-8">

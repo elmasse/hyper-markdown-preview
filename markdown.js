@@ -2,7 +2,7 @@
 const Remarkable = require('remarkable');
 const hljs = require('highlight.js');
 
-exports.markdown = new Remarkable({
+const md = new Remarkable({
   html: true,
   linkify: true,
   typographer: true,
@@ -20,3 +20,19 @@ exports.markdown = new Remarkable({
     return ''; // use external default escaping
   }
 });  
+
+
+exports.markdown = md;
+
+exports.replaceLocalImagePlugin = (instance, options) => {
+  const img = instance.renderer.rules.image;
+  instance.renderer.rules.image = (tokens, idx, opts /*, env */) => {
+    const src = tokens[idx].src;
+    const isLocal = !src.match(/^http/);
+    if (isLocal) {
+      tokens[idx].src = `file://${options.cwd}${src.substring(1)}`;
+    }
+    return img(tokens, idx, opts /*, env */);
+  }
+}
+
