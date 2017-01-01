@@ -44,7 +44,17 @@ exports.middleware = (store) => (next) => (action) => {
               
               const source = readFileSync(path, 'UTF-8');
               const html =  `<html>
+                <head>
                 <meta charset="utf-8">
+                <style>
+                  .markdown-body {
+                    font-family: Helvetica, Arial, sans serif;
+                  }
+                  img {
+                    max-width: 90vw;                    
+                  }
+                </style>
+                </head>
                 <body class="markdown-body">${markdown.render(source)}</body>
                 </html>`;
 
