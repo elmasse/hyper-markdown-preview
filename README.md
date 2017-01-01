@@ -17,9 +17,13 @@ Just type the location of your markdown file in your terminal.
 
 Add the hyper-markdown-preview to your `.hyper.js` config file.
 
-```json
-
-    plugins: [`hyper-markdown-preview`],
-
+```js
+module.exports = {
+    //...
+    plugins: [
+        `hyper-markdown-preview`
+    ],
+    //...
+} 
 ```
 
