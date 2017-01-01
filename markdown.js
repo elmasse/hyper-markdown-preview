@@ -22,17 +22,33 @@ const md = new Remarkable({
 });  
 
 
+const imageRender = (options, imgFn) => (tokens, idx, opts /*, env */) => {
+  const src = tokens[idx].src;
+  const isLocal = !src.match(/^http|file/);
+  if (isLocal) {
+    tokens[idx].src = createLocalUri(options.cwd, src);
+  }
+  return imgFn(tokens, idx, opts /*, env */);
+}
+
+const createLocalUri = (cwd, src) => {
+  let uri = src;
+
+  if (src.match(/^\./)) {
+    uri = src.substring(1);
+  }
+
+  if (!src.match(/^\//)) {
+    uri = `/${uri}`;
+  }
+
+  return `file://${cwd}${uri}`;
+}
+
 exports.markdown = md;
 
 exports.replaceLocalImagePlugin = (instance, options) => {
-  const img = instance.renderer.rules.image;
-  instance.renderer.rules.image = (tokens, idx, opts /*, env */) => {
-    const src = tokens[idx].src;
-    const isLocal = !src.match(/^http/);
-    if (isLocal) {
-      tokens[idx].src = `file://${options.cwd}${src.substring(1)}`;
-    }
-    return img(tokens, idx, opts /*, env */);
-  }
+  const imgFn = instance.renderer.rules.image;
+  instance.renderer.rules.image = imageRender(options, imgFn)
 }
 
