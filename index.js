@@ -16,6 +16,18 @@ const resolveCWD = (pid, cb) => {
   });
 }
 
+exports.decorateConfig = (config) => {
+  const hyperMarkdownPreviewConfig = {
+    stylesheet: 'github'
+  }
+  return Object.assign({ hyperMarkdownPreviewConfig }, config);
+}  
+
+const stylesheets = {
+  github: `<link href="https://unpkg.com/github-markdown-css@2.8.0" rel="stylesheet" />`,
+  none: `<style>.markdown-body {font-family: Helvetica, Arial, sans serif;} </style>`
+}
+
 exports.middleware = (store) => (next) => (action) => {
 
   if ('SESSION_ADD_DATA' === action.type) {
@@ -26,10 +38,11 @@ exports.middleware = (store) => (next) => (action) => {
     const session = sessions.sessions[activeUid];
     const { pid, shell } = session;
     const match = data.match(matcher[shell]);
-
+    const { hyperMarkdownPreviewConfig } = window.config.getConfig()
     if (match) { 
       const file = match[2];
       if (/\.(md|markdown)$/.test(file)) {
+
           resolveCWD(pid, (err, cwd) => {
             if (err) {
               console.log('Cannot retrieve CWD', err);
@@ -43,17 +56,19 @@ exports.middleware = (store) => (next) => (action) => {
               markdown.use(replaceLocalImagePlugin, {cwd});
               
               const source = readFileSync(path, 'UTF-8');
+
               const html =  `<html>
                 <head>
                 <meta charset="utf-8">
+                ${github_style}
                 <style>
                   .markdown-body {
-                    font-family: Helvetica, Arial, sans serif;
+                    margin: 50px;
                   }
                   img {
                     max-width: 90vw;                    
                   }
-                </style>
+                </style>                
                 </head>
                 <body class="markdown-body">${markdown.render(source)}</body>
                 </html>`;

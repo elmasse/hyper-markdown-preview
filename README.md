@@ -27,3 +27,18 @@ module.exports = {
 } 
 ```
 
+## Config
+
+Since version 1.1 you can configure the stylesheets to use when rendering the markdown. 
+
+```js
+module.exports = {
+
+    // ...
+    hyperMarkdowPreviewConfig: {
+        stylesheet: 'github' // github | none
+    }
+    // ...
+}
+
+```
