@@ -33,11 +33,14 @@ Since version 1.1 you can configure the stylesheets to use when rendering the ma
 
 ```js
 module.exports = {
+    config: {
+        // ...
 
-    // ...
-    hyperMarkdowPreviewConfig: {
-        stylesheet: 'github' // github | none
+        hyperMarkdownPreview: {
+            stylesheet: 'github' // github | none
+        }
     }
+    
     // ...
 }
 

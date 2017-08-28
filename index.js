@@ -16,11 +16,15 @@ const resolveCWD = (pid, cb) => {
   });
 }
 
+const hyperMarkdownPreview = {
+  stylesheet: 'github'
+}
+
 exports.decorateConfig = (config) => {
-  const hyperMarkdownPreviewConfig = {
-    stylesheet: 'github'
-  }
-  return Object.assign({ hyperMarkdownPreviewConfig }, config);
+   console.log(config)
+  return Object.assign({
+    hyperMarkdownPreview
+  }, config);
 }  
 
 const stylesheets = {
@@ -38,7 +42,8 @@ exports.middleware = (store) => (next) => (action) => {
     const session = sessions.sessions[activeUid];
     const { pid, shell } = session;
     const match = data.match(matcher[shell]);
-    const { hyperMarkdownPreviewConfig } = window.config.getConfig()
+    const globalCfg = window.config.getConfig();
+    const config = globalCfg.hyperMarkdownPreview || hyperMarkdownPreview;
     if (match) { 
       const file = match[2];
       if (/\.(md|markdown)$/.test(file)) {
@@ -56,11 +61,11 @@ exports.middleware = (store) => (next) => (action) => {
               markdown.use(replaceLocalImagePlugin, {cwd});
               
               const source = readFileSync(path, 'UTF-8');
-
+              const style = stylesheets[config.stylesheet] || stylesheets.github;
               const html =  `<html>
                 <head>
                 <meta charset="utf-8">
-                ${github_style}
+                ${style}
                 <style>
                   .markdown-body {
                     margin: 50px;
