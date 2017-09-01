@@ -78,8 +78,9 @@ exports.middleware = (store) => (next) => (action) => {
                 <body class="markdown-body">${markdown.render(source)}</body>
                 </html>`;
 
-              const url = URL.createObjectURL(new Blob([html],{type: 'text/html'}));
-              
+              // const url = URL.createObjectURL(new Blob([html],{type: 'text/html'}))
+              const url = `data:text/html,${html}`;
+
               store.dispatch({
                 type: 'SESSION_URL_SET',
                 uid: activeUid,
